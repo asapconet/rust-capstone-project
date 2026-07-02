@@ -1,15 +1,18 @@
 #![allow(unused)]
 use bitcoin::hex::DisplayHex;
-use bitcoincore_rpc::bitcoin::Amount;
-use bitcoincore_rpc::{Auth, Client, RpcApi};
+use bitcoincore_rpc::bitcoin::Address;
+use bitcoincore_rpc::bitcoin::Network;
+use bitcoincore_rpc::{Auth, Client, Result, RpcApi};
 use serde::Deserialize;
-use serde_json::json;
+use serde_json::{json, Error};
 use std::fs::File;
 use std::io::Write;
 
+mod transactions;
 mod wallets;
 
-use crate::wallets::load_or_create_wallet;
+use crate::transactions::send_btc;
+use crate::wallets::{create_receiving_addy, generate_balance, load_or_create_wallet};
 
 // Node access params
 const RPC_URL: &str = "http://127.0.0.1:18443"; // Default regtest RPC port
@@ -38,10 +41,6 @@ fn send(rpc: &Client, addr: &str) -> bitcoincore_rpc::Result<String> {
     Ok(send_result.txid)
 }
 
-fn generate_balance(rpc: &Client, wallet_name: &str) -> u8 {
-    load_or_create_wallet(rpc, wallet_name).getBalance
-}
-
 fn main() -> bitcoincore_rpc::Result<()> {
     // Connect to Bitcoin Core RPC
     let rpc = Client::new(
@@ -55,15 +54,18 @@ fn main() -> bitcoincore_rpc::Result<()> {
 
     // Create/Load the wallets, named 'Miner' and 'Trader'. Have logic to optionally create/load them if they do not exist or not loaded already.
     let wallets = ("Miner", "Trader");
-    load_or_create_wallet(&rpc, wallets.0);
-    load_or_create_wallet(&rpc, wallets.1);
+    load_or_create_wallet(&rpc, wallets.0)?;
+    load_or_create_wallet(&rpc, wallets.1)?;
 
-    // Generate spendable balances in the Miner wallet. How many blocks needs to be mined?
+    // Generate spendable balances in the Miner wallet. How many blocks needs to be mined? [answer == 100]
+    generate_balance(&rpc, wallets.0)?;
 
     // Load Trader wallet and generate a new address
+    let trader_addy = create_receiving_addy(&rpc, wallets.1)?;
+    println!("Trader Address: {}", trader_addy);
 
     // Send 20 BTC from Miner to Trader
-
+    send_btc(&rpc, 500_000_000, wallets.1);
     // Check transaction in mempool
 
     // Mine 1 block to confirm the transaction
