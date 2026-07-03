@@ -19,7 +19,7 @@ pub fn load_or_create_wallet(rpc: &Client, wallet_label: &str) -> Result<()> {
 
     // this checks load and or create a wallet from the name we pass to the function
     // if it exist we continue and if it fails we create a new wallet based on the name stng passed
-    match rpc.load_wallet(&wallet_label) {
+    match rpc.load_wallet(wallet_label) {
         Ok(_) => {
             println!("{} wallet loaded", wallet_label);
             Ok(())
@@ -27,7 +27,7 @@ pub fn load_or_create_wallet(rpc: &Client, wallet_label: &str) -> Result<()> {
 
         Err(e) => {
             rpc.create_wallet(
-                &wallet_label,
+                wallet_label,
                 disable_private_keys,
                 blank,
                 passphrase,

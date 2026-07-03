@@ -44,7 +44,7 @@ pub fn send_btc(rpc: &Client, amount: Amount, addr: &Address) -> Result<Txid> {
 pub fn check_memory_tx(rpc: &Client, txid: &Txid) -> Result<bool> {
     let mempool_tx = rpc.get_raw_mempool()?;
 
-    if mempool_tx.contains(&txid) {
+    if mempool_tx.contains(txid) {
         println!("transaction: {} found succfully in the mempool", txid);
         Ok(true)
     } else {
