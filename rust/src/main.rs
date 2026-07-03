@@ -53,7 +53,6 @@ fn main() -> bitcoincore_rpc::Result<()> {
 
     // Extract all required transaction details
     let tx_details = miner_rpc.get_transaction(&txid, Some(true))?;
-    println!("{:#?}", tx_details);
 
     // Write the data to ../out.txt in the specified format given in readme.md
     write_tx_output(&miner_rpc, &txid, &trader_addy, &tx_details)?;

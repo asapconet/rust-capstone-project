@@ -22,10 +22,10 @@ pub fn send_btc(rpc: &Client, amount: Amount, addr: &Address) -> Result<Txid> {
 
     let args = [
         json!({recipient: amount.to_btc()}), // recipient address -- it has be updated to include the amount type and values
-        json!(null),// conf target
-        json!(null),// estimate mode
-        json!(null),// fee rate in sats/vb
-        json!(null),// Empty option object
+        json!(null),                         // conf target
+        json!(null),                         // estimate mode
+        json!(null),                         // fee rate in sats/vb
+        json!(null),                         // Empty option object
     ];
 
     #[derive(Deserialize)]
