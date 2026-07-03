@@ -16,7 +16,6 @@ use crate::wallets::{create_receiving_addy, generate_balance, load_or_create_wal
 
 fn main() -> bitcoincore_rpc::Result<()> {
     let initialize = default_node()?;
-
     // Create/Load the wallets, named 'Miner' and 'Trader'.
     // Have logic to optionally create/load them if they do not exist or not loaded already.
     let wallets = ("Miner", "Trader");
@@ -28,7 +27,7 @@ fn main() -> bitcoincore_rpc::Result<()> {
 
     // Generate spendable balances in the Miner wallet.
     // How many blocks needs to be mined? [answer == 100]
-    generate_balance(&miner_rpc, wallets.0)?;
+    generate_balance(&miner_rpc)?;
 
     // Load Trader wallet and generate a new address
     let trader_addy = create_receiving_addy(&trader_rpc, wallets.1)?;
