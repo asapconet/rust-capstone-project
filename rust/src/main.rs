@@ -9,8 +9,7 @@ mod rpc;
 mod transactions;
 mod wallets;
 
-use crate::outputs::write_out_txt;
-use crate::outputs::TxOutputData;
+use crate::outputs::write_tx_output;
 use crate::rpc::{default_node, wallet_node};
 use crate::transactions::{check_memory_tx, send_btc};
 use crate::wallets::{create_receiving_addy, generate_balance, load_or_create_wallet};
@@ -53,29 +52,10 @@ fn main() -> bitcoincore_rpc::Result<()> {
     let mined_blocks = miner_rpc.generate_to_address(1, &miner_addy)?; // it returns the block hash
 
     // Extract all required transaction details
-    let tx_details = miner_rpc.get_transaction(&txid, Some(false))?;
-    println!("transaction details: {:#?}", tx_details);
+    let tx_details = miner_rpc.get_transaction(&txid, Some(true))?;
+    println!("{:#?}", tx_details);
 
     // Write the data to ../out.txt in the specified format given in readme.md
-    let data = TxOutputData {
-        txid: txid.to_string(),
-
-        miner_input_address: miner_addy.to_string(),
-        miner_input_amount: 0.0,
-
-        trader_output_address: trader_addy.to_string(),
-        trader_output_amount: 20.0,
-
-        miner_change_address: String::new(),
-        miner_change_amount: 0.0,
-
-        fee: 0.0,
-
-        block_height: 0,
-        block_hash: String::new(),
-    };
-
-    write_out_txt(&data)?;
-
+    write_tx_output(&miner_rpc, &txid, &trader_addy, &tx_details)?;
     Ok(())
 }
