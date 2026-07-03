@@ -35,8 +35,8 @@ pub fn generate_balance(rpc: &Client, miner_wallet: &str) -> Result<Amount> {
     let block_hash = rpc.generate_to_address(101, &addy)?;
     println!(
         "Mined {} blocks, the last block is {:?}",
-        block_hash.len(),
-        block_hash.last()
+        block_hash.len(),  // the lenght of the transaction hash
+        block_hash.last()  // the last transaction hash
     );
 
     let bal = rpc.get_balance(None, None)?;

@@ -11,7 +11,7 @@ mod transactions;
 mod wallets;
 
 use crate::rpc::{default_node, wallet_node};
-use crate::transactions::send_btc;
+use crate::transactions::{check_memory_tx, send_btc};
 use crate::wallets::{create_receiving_addy, generate_balance, load_or_create_wallet};
 
 fn main() -> bitcoincore_rpc::Result<()> {
@@ -42,10 +42,16 @@ fn main() -> bitcoincore_rpc::Result<()> {
     println!("Transaction ID: {}", txid);
 
     // Check transaction in mempool
+    check_memory_tx(&initialize, &txid)?;
 
     // Mine 1 block to confirm the transaction
+    // Because I am confirming a miners transaction I as the miner should take the reward yea!
+    let miner_addy = create_receiving_addy(&miner_rpc, wallets.0)?;
+    let mined_blocks = initialize.generate_to_address(1, &miner_addy)?; // it returns the block hash
 
     // Extract all required transaction details
+    let tx_details = initialize.get_transaction(&txid, Some(false))?;
+    println!("transaction details: {:#?}", tx_details);
 
     // Write the data to ../out.txt in the specified format given in readme.md
 

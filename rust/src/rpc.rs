@@ -24,7 +24,7 @@ pub fn default_node() -> Result<Client> {
 // this is a helper function to connect to a wallet node by name
 // so I don't have to remember the wallet URL format. it builds the URL dynamically
 pub fn wallet_node(wallet_name: &str) -> Result<Client> {
-    let wallet_url = format!("{}/wallet/{}", RPC_URL, wallet_name);
+    let wallet_url = format!("/{}/wallet/{}", RPC_URL, wallet_name);
     let wallet = Client::new(
         &wallet_url,
         Auth::UserPass(RPC_USER.to_owned(), RPC_PASS.to_owned()),
