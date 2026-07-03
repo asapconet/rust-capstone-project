@@ -1,0 +1,10 @@
+TxID: 3cfcda036c6086518d89922a86dfa141b12be934ac0f147f00e805616631c7cf
+Miner Input Address: bcrt1q0dqsr3x30nrqu6r6e5ymtnwycwrwjzktcdqp3h
+Miner Input Amount: 0
+Trader Output Address: bcrt1qtlemzy06jwqcnv63quvj26k3m9hpk4xn34hz9l
+Trader Output Amount: 20
+Miner Change Address: 
+Miner Change Amount: 0
+Fee: 0
+Block Height: 0
+Block Hash: 
