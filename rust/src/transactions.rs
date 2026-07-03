@@ -9,12 +9,23 @@ use serde_json::json;
 pub fn send_btc(rpc: &Client, amount: Amount, addr: &Address) -> Result<Txid> {
     // I have to set this outside so i can debug properly in future
     let recipient = addr.to_string();
+
+    //I have to set this outside so i can debug properly in future
+    // it allows me to use the wallet without needing to enter the passphrase every time
+    rpc.call::<serde_json::Value>(
+        "walletpassphrase",
+        &[
+            json!("traders-or-miners-wallet-are-sometimes-unique"), // this is same as that used in the wallet creation
+            json!(10), // seconds until it auto-locks again
+        ],
+    )?;
+
     let args = [
-        json!([{recipient: amount.to_btc()}]), // recipient address -- it has be updated to include the amount type and values
-        json!(null),                           // conf target
-        json!(null),                           // estimate mode
-        json!(null),                           // fee rate in sats/vb
-        json!(null),                           // Empty option object
+        json!({recipient: amount.to_btc()}), // recipient address -- it has be updated to include the amount type and values
+        json!(null),// conf target
+        json!(null),// estimate mode
+        json!(null),// fee rate in sats/vb
+        json!(null),// Empty option object
     ];
 
     #[derive(Deserialize)]
@@ -22,6 +33,7 @@ pub fn send_btc(rpc: &Client, amount: Amount, addr: &Address) -> Result<Txid> {
         complete: bool,
         txid: Txid,
     }
+
     let send_result = rpc.call::<SendResult>("send", &args)?;
     assert!(send_result.complete);
     Ok(send_result.txid)

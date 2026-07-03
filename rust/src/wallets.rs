@@ -6,7 +6,7 @@ use bitcoincore_rpc::{Client, RpcApi};
 pub fn load_or_create_wallet(rpc: &Client, wallet_label: &str) -> Result<()> {
     let disable_private_keys = Some(false);
     let blank = Some(false);
-    let passphrase = Some("traders-or-miners-wallet-are-sometimes-unique");
+    let passphrase = Some("traders-or-miners-wallet-are-sometimes-unique"); // it will also be used to unlock the wallet
     let avoid_reuse = Some(true);
 
     let loaded_wallet = rpc.list_wallets()?;
@@ -43,7 +43,8 @@ pub fn load_or_create_wallet(rpc: &Client, wallet_label: &str) -> Result<()> {
 pub fn generate_balance(rpc: &Client) -> Result<Amount> {
     let addy = rpc.get_new_address(None, None)?.assume_checked(); // I am using that with the assumptiion that we are on the Regtest network and not main or any type
 
-    //this should mine after the 100th block level and give back the hashes to be used to get the bal
+    //this should mine after the 100th block level and give back the hashes to be used to get the balance
+    // it behaves this way cause the because at that depth the block reward is said to be confirmed and cannot be manipulated
     let block_hash = rpc.generate_to_address(101, &addy)?;
     println!(
         "Mined {} blocks, the last block is {:?}",
